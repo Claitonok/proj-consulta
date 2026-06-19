@@ -10,10 +10,10 @@ Instalação do Next.js:
     ✔ Criar componente Header @done (26/05/2026, 10:44:40)
     ✔ Importar e usar o componente Header na página inicial @done (26/05/2026, 10:44:45)
 
-    
+
 GitHub:
 
-    ☐ git init
-    ☐ git add .
-    ☐ git commit -m "Initial commit"
-    ☐ git branch -M main
+    ✔ git init @done (19/06/2026, 18:33:14)
+    ✔ git add . @done (19/06/2026, 18:33:14)
+    ✔ git commit -m "Initial commit" @done (19/06/2026, 18:33:14)
+    ✔ git branch -M main @done (19/06/2026, 18:33:14)
