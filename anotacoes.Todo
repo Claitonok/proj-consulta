@@ -1,0 +1,19 @@
+
+Instalação do Next.js:
+
+    ✔ npx create-next-app@latest nomeDoProjeto @done (26/05/2026, 10:44:09)
+    ✔ cd nomeDoProjeto @done (26/05/2026, 10:44:14)
+    ✔ npm run dev @done (26/05/2026, 10:44:18)
+    ✔ Nome de componente: Primeira letra maiúscula @done (26/05/2026, 10:44:25)
+    ✔ Criar pasta components @done (26/05/2026, 10:44:30)
+    ✔ Criar arquivo header.tsx @done (26/05/2026, 10:44:35)
+    ✔ Criar componente Header @done (26/05/2026, 10:44:40)
+    ✔ Importar e usar o componente Header na página inicial @done (26/05/2026, 10:44:45)
+
+    
+GitHub:
+
+    ☐ git init
+    ☐ git add .
+    ☐ git commit -m "Initial commit"
+    ☐ git branch -M main

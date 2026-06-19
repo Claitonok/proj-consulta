@@ -1,36 +1,158 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 CEP Finder
 
-## Getting Started
+Sistema web desenvolvido com **Next.js**, **React**, **TypeScript** e **Tailwind CSS**, reunindo diversas ferramentas úteis em uma única aplicação moderna e responsiva.
 
-First, run the development server:
+## ✨ Funcionalidades
+
+### 📍 Consulta de CEP
+
+* Busca de endereços utilizando a API ViaCEP.
+* Exibição dos dados em modal elegante.
+* Validação de CEP.
+* Interface responsiva.
+
+### 🏢 Consulta de CNPJ
+
+* Consulta de empresas através da BrasilAPI.
+* Exibição de:
+
+  * Razão Social
+  * Nome Fantasia
+  * Situação Cadastral
+  * CNAE
+  * Natureza Jurídica
+  * Telefone
+  * E-mail
+  * Cidade e Estado
+
+### 🧮 Calculadora
+
+Calculadora matemática com suporte a:
+
+* Soma (+)
+* Subtração (-)
+* Multiplicação (×)
+* Divisão (÷)
+* Parênteses
+* Números decimais
+
+### ⚖️ Calculadora de IMC
+
+Calcula o Índice de Massa Corporal.
+
+Classificações:
+
+* Abaixo do peso
+* Peso normal
+* Sobrepeso
+* Obesidade
+
+### 🎓 Calculadora de Média Escolar
+
+* Adição dinâmica de notas.
+* Remoção de notas.
+* Cálculo automático da média.
+* Exibição do resultado.
+* Classificação:
+
+| Média | Situação    |
+| ----- | ----------- |
+| ≥ 7   | Aprovado    |
+| ≥ 5   | Recuperação |
+| < 5   | Reprovado   |
+
+---
+
+## 🖼️ Interface
+
+O projeto utiliza:
+
+* Tailwind CSS
+* Glassmorphism
+* Layout responsivo
+* Dark Mode
+* Lucide React Icons
+
+---
+
+## 🛠️ Tecnologias
+
+* Next.js 15
+* React 19
+* TypeScript
+* Tailwind CSS
+* Lucide React
+* Sonner (Toast Notifications)
+
+---
+
+## 📦 Instalação
+
+Clone o projeto:
+
+```bash
+git clone https://github.com/seu-usuario/cep-finder.git
+```
+
+Entre na pasta:
+
+```bash
+cd cep-finder
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Execute o projeto:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+A aplicação estará disponível em:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🌐 APIs Utilizadas
 
-To learn more about Next.js, take a look at the following resources:
+### ViaCEP
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Consulta de CEPs brasileiros.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+https://viacep.com.br
 
-## Deploy on Vercel
+### BrasilAPI
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Consulta de dados empresariais por CNPJ.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+https://brasilapi.com.br
+
+---
+
+## 📱 Responsividade
+
+A aplicação foi desenvolvida para funcionar em:
+
+* Desktop
+* Notebook
+* Tablet
+* Smartphone
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido por Claiton dos Santos Silva utilizando Next.js e React.
