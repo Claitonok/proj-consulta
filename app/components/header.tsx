@@ -76,6 +76,9 @@ export default function Header() {
               <Link href="/pages/calcula-media" className="flex items-center gap-3 px-5 py-4 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">
                 <GraduationCap size={18} /> Calcular Média
               </Link>
+              <Link href="/pages/consulta-consumo-veiculo" className="flex items-center gap-3 px-5 py-4 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">
+                <Calculator size={18} /> Consumo Veículo
+              </Link>
               <div className="border-t border-zinc-700" />
               <Link href="/pages/login" className="flex items-center gap-3 px-5 py-4 text-emerald-400 hover:bg-zinc-800 transition-colors font-medium">
                 <LogIn size={18} /> Fazer Login
@@ -123,6 +126,9 @@ export default function Header() {
                 </Link>
                 <Link href="/pages/calcula-media" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-300 hover:bg-white/5 rounded-lg transition-colors">
                   <GraduationCap size={16} /> Calcular Média
+                </Link>
+                <Link href="/pages/consulta-consumo-veiculo" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm text-zinc-300 hover:bg-white/5 rounded-lg transition-colors">
+                  <Calculator size={16} /> Consumo Veículo
                 </Link>
                 <div className="border-t border-white/5 my-1" />
                 <Link href="/pages/login" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm text-emerald-400 hover:bg-white/5 rounded-lg transition-colors font-medium">
