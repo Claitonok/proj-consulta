@@ -21,9 +21,7 @@ export default function ConsultaConsumoVeiculo() {
     anual: number;
   } | null>(null);
 
-  function calcularConsumo(
-    e: React.FormEvent
-  ) {
+  function calcularConsumo(e: any) {
     e.preventDefault();
 
     const km = Number(kmSemana);
@@ -63,7 +61,7 @@ export default function ConsultaConsumoVeiculo() {
 
       <main className="flex-1 flex items-center justify-center px-6 py-16">
 
-        <div className="w-full max-w-3xl bg-white/10 backdrop-blur-xl border border-white/10 rounded-[32px] shadow-2xl p-10">
+        <div className="w-full max-w-3xl bg-white/10 backdrop-blur-xl border border-white/10 rounded-4xl shadow-2xl p-10">
 
           {/* HEADER */}
           <div className="text-center mb-10">
