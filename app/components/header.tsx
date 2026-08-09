@@ -357,3 +357,151 @@ export function HeaderAbout() {
     </header>
   );
 }
+
+
+/**
+ * HEADER PARA A PÁGINA CONTACT
+ */
+export function HeaderContact() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/40 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+
+        {/* LOGO */}
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-11 h-11 rounded-2xl bg-linear-to-br from-purple-400 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+            <MapPin className="text-black" size={22} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-black tracking-tight text-white group-hover:text-purple-400 transition-all">
+              Contato
+            </h1>
+            <p className="text-xs text-zinc-400">Conheça nossa plataforma</p>
+          </div>
+        </Link>
+
+        {/* DESKTOP NAVIGATION */}
+        <nav className="hidden md:flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3 px-5 py-4 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">
+            <House size={18} /> Home
+          </Link>
+          <Link href="/pages/saiba-mais" className="ml-2 bg-linear-to-r from-purple-400 to-pink-500 hover:scale-105 transition-all duration-300 text-black font-semibold px-5 py-2 rounded-2xl shadow-lg">
+            Saiba Mais
+          </Link>
+        </nav>
+
+        {/* MOBILE HAMBURGER BUTTON */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden w-11 h-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+        >
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+      </div>
+
+      {/* MOBILE MENU (Implementado e Responsivo) */}
+      {menuOpen && (
+        <div className="md:hidden border-t border-white/10 bg-zinc-950/95 backdrop-blur-xl max-h-[calc(100vh-80px)] overflow-y-auto">
+          <nav className="flex flex-col p-4 gap-2">
+            
+            <Link 
+              href="/" 
+              onClick={() => setMenuOpen(false)} 
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-300 hover:bg-white/5 transition-colors"
+            >
+              <House size={18} /> Home
+            </Link>
+
+            <div className="border-t border-white/10 my-2" />
+
+            {/* BOTÃO DE DESTAQUE REPRODUZIDO COM PRECISÃO PARA MOBILE */}
+            <Link 
+              href="/pages/saiba-mais" 
+              onClick={() => setMenuOpen(false)} 
+              className="flex items-center justify-center gap-2 bg-linear-to-r from-purple-400 to-pink-500 text-black font-bold px-5 py-3 rounded-xl shadow-lg shadow-purple-500/10 active:scale-98 transition-all"
+            >
+              Saiba Mais <ArrowRight size={18} />
+            </Link>
+
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
+
+
+/**
+ * HEADER PARA A PÁGINA LOGIN
+ */
+export function HeaderLogin() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/40 backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+
+        {/* LOGO */}
+        <Link href="/" className="flex items-center gap-3 group">
+          <div className="w-11 h-11 rounded-2xl bg-linear-to-br from-purple-400 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+            <MapPin className="text-black" size={22} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-black tracking-tight text-white group-hover:text-purple-400 transition-all">
+              Finder
+            </h1>
+            <p className="text-xs text-zinc-400">Conheça nossa plataforma</p>
+          </div>
+        </Link>
+
+        {/* DESKTOP NAVIGATION */}
+        <nav className="hidden md:flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-3 px-5 py-4 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">
+            <House size={18} /> Home
+          </Link>
+          <Link href="/pages/saiba-mais" className="ml-2 bg-linear-to-r from-purple-400 to-pink-500 hover:scale-105 transition-all duration-300 text-black font-semibold px-5 py-2 rounded-2xl shadow-lg">
+            Saiba Mais
+          </Link>
+        </nav>
+
+        {/* MOBILE HAMBURGER BUTTON */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden w-11 h-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
+        >
+          {menuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+      </div>
+
+      {/* MOBILE MENU (Implementado e Responsivo) */}
+      {menuOpen && (
+        <div className="md:hidden border-t border-white/10 bg-zinc-950/95 backdrop-blur-xl max-h-[calc(100vh-80px)] overflow-y-auto">
+          <nav className="flex flex-col p-4 gap-2">
+            
+            <Link 
+              href="/" 
+              onClick={() => setMenuOpen(false)} 
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-300 hover:bg-white/5 transition-colors"
+            >
+              <House size={18} /> Home
+            </Link>
+
+            <div className="border-t border-white/10 my-2" />
+
+            {/* BOTÃO DE DESTAQUE REPRODUZIDO COM PRECISÃO PARA MOBILE */}
+            <Link 
+              href="/pages/saiba-mais" 
+              onClick={() => setMenuOpen(false)} 
+              className="flex items-center justify-center gap-2 bg-linear-to-r from-purple-400 to-pink-500 text-black font-bold px-5 py-3 rounded-xl shadow-lg shadow-purple-500/10 active:scale-98 transition-all"
+            >
+              Saiba Mais <ArrowRight size={18} />
+            </Link>
+
+          </nav>
+        </div>
+      )}
+    </header>
+  );
+}
