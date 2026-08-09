@@ -23,6 +23,7 @@ interface CompanyData {
     situacao: string;
     telefone: string;
     email: string;
+    cep: string;
     municipio: string;
     uf: string;
     numero: string;
@@ -69,7 +70,7 @@ export default function ConsultaCnpj() {
         return value.slice(0, 18);
     };
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(e: any) {
         e.preventDefault();
 
         if (!cnpj) {
@@ -119,6 +120,8 @@ export default function ConsultaCnpj() {
                     formatTelefone(data.ddd_telefone_1),
                 email:
                     data.email || "Não informado",
+                cep:
+                    formatCep(data.cep || "Não informado"),
                 municipio:
                     data.municipio || "Não informado",
                 uf:
@@ -187,6 +190,17 @@ export default function ConsultaCnpj() {
         return telefone.replace(
             /^(\d{2})(\d{4})(\d{4})$/,
             "($1) $2-$3"
+        );
+    };
+
+    const formatCep = (cep: string) => {
+        if (!cep || cep === "Não informado") {
+            return cep;
+        }
+
+        return cep.replace(
+            /^(\d{5})(\d{3})$/,
+            "$1-$2"
         );
     };
 
@@ -410,6 +424,11 @@ export default function ConsultaCnpj() {
                                 <InfoCard
                                     title="E-mail"
                                     value={company.email}
+                                />
+
+                                <InfoCard
+                                    title="CEP"
+                                    value={company.cep}
                                 />
 
                                 <InfoCard
