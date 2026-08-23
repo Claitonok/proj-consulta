@@ -28,11 +28,16 @@ interface CompanyData {
     uf: string;
     numero: string;
     logradouro: string;
+    complemento: string;
     bairro: string;
     cnaes_secundarios: {
         codigo: string;
         descricao: string;
     }[];
+    opcao_pelo_simples: string;
+    data_situacao_cadastral: string;
+    descricao_identificador_matriz_filial: string;
+    data_inicio_atividade: string;
 }
 
 export default function ConsultaCnpj() {
@@ -130,10 +135,20 @@ export default function ConsultaCnpj() {
                     data.numero || "Não informado",
                 logradouro:
                     data.logradouro || "Não informado",
+                complemento:
+                    data.complemento || "Não informado",
                 bairro:
                     data.bairro || "Não informado",
                 cnaes_secundarios:
                     data.cnaes_secundarios || [],
+                opcao_pelo_simples:
+                    data.opcao_pelo_simples || "Não Enquadrado",
+                data_situacao_cadastral:
+                    formatDate(data.data_situacao_cadastral || "Não informado"),
+                descricao_identificador_matriz_filial:
+                    data.descricao_identificador_matriz_filial || "Não informado",
+                data_inicio_atividade:
+                    formatDate(data.data_inicio_atividade || "Não informado"),
             });
 
             setShowModal(true);
@@ -202,6 +217,13 @@ export default function ConsultaCnpj() {
             /^(\d{5})(\d{3})$/,
             "$1-$2"
         );
+    };
+
+    const formatDate = (dateString: string) => {
+        if (!dateString || dateString === "Não informado") return "";
+        const [year, month, day] = dateString.split("-");
+        if (!year || !month || !day) return dateString;
+        return `${day}/${month}/${year}`;
     };
 
     // COPIAR CNPJ
@@ -365,8 +387,9 @@ export default function ConsultaCnpj() {
                                     <div className="flex items-center justify-between gap-3">
 
                                         <p className="font-medium text-zinc-100 wrap-break-word">
-                                            {company.cnpj ||
-                                                "Não informado"}
+                                            {`${
+                                                company.cnpj || "Não informado"
+                                            } - ${company.descricao_identificador_matriz_filial || "Não informado"}`}
                                         </p>
 
                                         <button
@@ -393,10 +416,9 @@ export default function ConsultaCnpj() {
                                                 transition-all
                                                 duration-200
                                                 active:scale-90
-                                                ${
-                                                    copied
-                                                        ? "bg-emerald-500 text-black"
-                                                        : "bg-zinc-700 text-zinc-300 hover:bg-emerald-500 hover:text-black"
+                                                ${copied
+                                                    ? "bg-emerald-500 text-black"
+                                                    : "bg-zinc-700 text-zinc-300 hover:bg-emerald-500 hover:text-black"
                                                 }
                                             `}
                                         >
@@ -411,34 +433,11 @@ export default function ConsultaCnpj() {
 
                                 </div>
 
-                                <InfoCard
-                                    title="Situação"
-                                    value={company.situacao}
-                                />
+                                {/* Informações Adicionais */}
 
                                 <InfoCard
-                                    title="Telefone"
-                                    value={company.telefone}
-                                />
-
-                                <InfoCard
-                                    title="E-mail"
-                                    value={company.email}
-                                />
-
-                                <InfoCard
-                                    title="CEP"
-                                    value={company.cep}
-                                />
-
-                                <InfoCard
-                                    title="Cidade"
-                                    value={`${company.municipio}/${company.uf}`}
-                                />
-
-                                <InfoCard
-                                    title="Bairro"
-                                    value={company.bairro}
+                                    title="Data de Início de Atividade"
+                                    value={company.data_inicio_atividade}
                                 />
 
                                 <InfoCard
@@ -449,6 +448,46 @@ export default function ConsultaCnpj() {
                                 <InfoCard
                                     title="Número"
                                     value={company.numero}
+                                />
+
+                                <InfoCard
+                                    title="Complemento"
+                                    value={company.complemento}
+                                />
+
+                                <InfoCard
+                                    title="CEP"
+                                    value={company.cep}
+                                />
+
+                                <InfoCard
+                                    title="Bairro"
+                                    value={company.bairro}
+                                />
+
+                                <InfoCard
+                                    title="Cidade"
+                                    value={`${company.municipio} / ${company.uf}`}
+                                />
+
+                                <InfoCard
+                                    title="E-mail"
+                                    value={company.email}
+                                />
+
+                                <InfoCard
+                                    title="Telefone"
+                                    value={company.telefone}
+                                />
+
+                                <InfoCard
+                                    title="Opção pelo Simples"
+                                    value={company.opcao_pelo_simples}
+                                />
+
+                                <InfoCard
+                                    title="Situação" 
+                                    value={`${company.situacao} -` + " Data da Situação Cadastral" + ` ${company.data_situacao_cadastral}`}
                                 />
 
                                 <InfoCard
