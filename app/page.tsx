@@ -73,9 +73,9 @@ export default function Home() {
         <div className="w-full max-w-xl bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl shadow-2xl p-10">
           <div className="text-center mb-8">
 
-          <div className="w-20 h-20 rounded-full mx-auto mb-4 bg-linear-to-r from-emerald-400 to-cyan-500 flex items-center justify-center">
-            <MapPin size={38} className="text-black" />
-          </div>
+            <div className="w-20 h-20 rounded-full mx-auto mb-4 bg-linear-to-r from-emerald-400 to-cyan-500 flex items-center justify-center">
+              <MapPin size={38} className="text-black" />
+            </div>
             <h1 className="text-4xl font-bold mb-3">
               Consulta de CEP
             </h1>
