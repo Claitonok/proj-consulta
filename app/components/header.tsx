@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Cookies from "js-cookie";
 import {
   FileText,
   House,
@@ -18,12 +19,21 @@ import {
   ChevronUp,
   ChevronDown,
   ArrowRight,
+  UserCheck,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/40 backdrop-blur-xl">
@@ -79,10 +89,19 @@ export default function Header() {
               <Link href="/pages/consulta-consumo-veiculo" className="flex items-center gap-3 px-5 py-4 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">
                 <Calculator size={18} /> Consumo Veículo
               </Link>
+              
               <div className="border-t border-zinc-700" />
-              <Link href="/pages/login" className="flex items-center gap-3 px-5 py-4 text-emerald-400 hover:bg-zinc-800 transition-colors font-medium">
-                <LogIn size={18} /> Fazer Login
-              </Link>
+
+              {/* CONDIÇÃO DE AUTENTICAÇÃO NO DESKTOP */}
+              {isAuthenticated ? (
+                <Link href="/pages/dashboard" className="flex items-center gap-3 px-5 py-4 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors font-medium">
+                  <UserCheck size={18} /> Área do Usuário
+                </Link>
+              ) : (
+                <Link href="/pages/login" className="flex items-center gap-3 px-5 py-4 text-emerald-400 hover:bg-zinc-800 transition-colors font-medium">
+                  <LogIn size={18} /> Fazer Login
+                </Link>
+              )}
             </div>
           </div>
         </nav>
@@ -131,9 +150,17 @@ export default function Header() {
                   <Calculator size={16} /> Consumo Veículo
                 </Link>
                 <div className="border-t border-white/5 my-1" />
-                <Link href="/pages/login" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm text-emerald-400 hover:bg-white/5 rounded-lg transition-colors font-medium">
-                  <LogIn size={16} /> Fazer Login
-                </Link>
+
+                {/* CONDIÇÃO DE AUTENTICAÇÃO NO MOBILE DROPDOWN */}
+                {isAuthenticated ? (
+                  <Link href="/pages/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm text-emerald-400 bg-emerald-500/10 hover:bg-white/5 rounded-lg transition-colors font-medium">
+                    <UserCheck size={16} /> Área do Usuário
+                  </Link>
+                ) : (
+                  <Link href="/pages/login" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 text-sm text-emerald-400 hover:bg-white/5 rounded-lg transition-colors font-medium">
+                    <LogIn size={16} /> Fazer Login
+                  </Link>
+                )}
               </div>
             )}
 
@@ -166,6 +193,14 @@ export default function Header() {
  */
 export function HeaderConsulta() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/40 backdrop-blur-xl">
@@ -199,7 +234,7 @@ export function HeaderConsulta() {
             <CircleHelp size={18} /> Ajuda
           </Link>
 
-          {/* DESKTOP DROPDOWN (HOVER ONLY FOR DESKTOP) */}
+          {/* DESKTOP DROPDOWN */}
           <div className="relative group">
             <button className="ml-2 flex items-center gap-2 bg-linear-to-r from-emerald-400 to-cyan-500 hover:scale-105 transition-all duration-300 text-black font-semibold px-5 py-2 rounded-2xl shadow-lg">
               <LogIn size={18} /> Menu
@@ -210,9 +245,16 @@ export function HeaderConsulta() {
                 <House size={18} /> Home
               </Link>
               <div className="border-t border-zinc-700" />
-              <Link href="/pages/login" className="flex items-center gap-3 px-5 py-4 text-emerald-400 hover:bg-zinc-800 transition-colors font-medium">
-                <LogIn size={18} /> Fazer Login
-              </Link>
+              
+              {isAuthenticated ? (
+                <Link href="/pages/dashboard" className="flex items-center gap-3 px-5 py-4 text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 transition-colors font-medium">
+                  <UserCheck size={18} /> Área do Usuário
+                </Link>
+              ) : (
+                <Link href="/pages/login" className="flex items-center gap-3 px-5 py-4 text-emerald-400 hover:bg-zinc-800 transition-colors font-medium">
+                  <LogIn size={18} /> Fazer Login
+                </Link>
+              )}
             </div>
           </div>
         </nav>
@@ -231,7 +273,6 @@ export function HeaderConsulta() {
         <div className="md:hidden border-t border-white/10 bg-zinc-950/95 backdrop-blur-xl max-h-[calc(100vh-80px)] overflow-y-auto">
           <nav className="flex flex-col p-4 gap-1">
 
-            {/* OPÇÕES PRINCIPAIS EM DESTAQUE NO MOBILE */}
             <Link 
               href="/" 
               onClick={() => setMenuOpen(false)} 
@@ -240,17 +281,26 @@ export function HeaderConsulta() {
               <House size={18} className="text-emerald-400" /> Home
             </Link>
             
-            <Link 
-              href="/pages/login" 
-              onClick={() => setMenuOpen(false)} 
-              className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-emerald-400 font-semibold transition-colors"
-            >
-              <LogIn size={18} /> Fazer Login
-            </Link>
+            {isAuthenticated ? (
+              <Link 
+                href="/pages/dashboard" 
+                onClick={() => setMenuOpen(false)} 
+                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-semibold transition-colors"
+              >
+                <UserCheck size={18} /> Área do Usuário
+              </Link>
+            ) : (
+              <Link 
+                href="/pages/login" 
+                onClick={() => setMenuOpen(false)} 
+                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/5 text-emerald-400 font-semibold transition-colors"
+              >
+                <LogIn size={18} /> Fazer Login
+              </Link>
+            )}
 
             <div className="border-t border-white/10 my-2" />
 
-            {/* LINKS ADICIONAIS */}
             <Link href="/pages/contact" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-300 hover:bg-white/5 transition-colors">
               <Phone size={18} /> Contato
             </Link>
@@ -272,13 +322,19 @@ export function HeaderConsulta() {
 }
 
 
-
-
 /**
  * HEADER PARA A PÁGINA ABOUT
  */
 export function HeaderAbout() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/40 backdrop-blur-xl">
@@ -305,6 +361,13 @@ export function HeaderAbout() {
           <Link href="/pages/contact" className="flex items-center gap-3 px-5 py-4 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">
             <Phone size={18} /> Contato
           </Link>
+
+          {isAuthenticated && (
+            <Link href="/pages/dashboard" className="flex items-center gap-2 px-5 py-4 text-purple-400 hover:bg-zinc-800 transition-colors font-semibold">
+              <UserCheck size={18} /> Área do Usuário
+            </Link>
+          )}
+
           <Link href="/pages/saiba-mais" className="ml-2 bg-linear-to-r from-purple-400 to-pink-500 hover:scale-105 transition-all duration-300 text-black font-semibold px-5 py-2 rounded-2xl shadow-lg">
             Saiba Mais
           </Link>
@@ -319,7 +382,7 @@ export function HeaderAbout() {
         </button>
       </div>
 
-      {/* MOBILE MENU (Implementado e Responsivo) */}
+      {/* MOBILE MENU */}
       {menuOpen && (
         <div className="md:hidden border-t border-white/10 bg-zinc-950/95 backdrop-blur-xl max-h-[calc(100vh-80px)] overflow-y-auto">
           <nav className="flex flex-col p-4 gap-2">
@@ -340,9 +403,18 @@ export function HeaderAbout() {
               <Phone size={18} /> Contato
             </Link>
 
+            {isAuthenticated && (
+              <Link 
+                href="/pages/dashboard" 
+                onClick={() => setMenuOpen(false)} 
+                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 font-semibold transition-colors"
+              >
+                <UserCheck size={18} /> Área do Usuário
+              </Link>
+            )}
+
             <div className="border-t border-white/10 my-2" />
 
-            {/* BOTÃO DE DESTAQUE REPRODUZIDO COM PRECISÃO PARA MOBILE */}
             <Link 
               href="/pages/saiba-mais" 
               onClick={() => setMenuOpen(false)} 
@@ -360,10 +432,18 @@ export function HeaderAbout() {
 
 
 /**
- * HEADER PARA A PÁGINA CONTACT
+ * HEADER PARA A PÁGINA CONTACT E LOGIN
  */
 export function HeaderContact() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
+  useEffect(() => {
+    const token = Cookies.get("token");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/40 backdrop-blur-xl">
@@ -387,6 +467,13 @@ export function HeaderContact() {
           <Link href="/" className="flex items-center gap-3 px-5 py-4 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">
             <House size={18} /> Home
           </Link>
+
+          {isAuthenticated && (
+            <Link href="/pages/dashboard" className="flex items-center gap-2 px-5 py-4 text-purple-400 hover:bg-zinc-800 transition-colors font-semibold">
+              <UserCheck size={18} /> Área do Usuário
+            </Link>
+          )}
+
           <Link href="/pages/saiba-mais" className="ml-2 bg-linear-to-r from-purple-400 to-pink-500 hover:scale-105 transition-all duration-300 text-black font-semibold px-5 py-2 rounded-2xl shadow-lg">
             Saiba Mais
           </Link>
@@ -401,7 +488,7 @@ export function HeaderContact() {
         </button>
       </div>
 
-      {/* MOBILE MENU (Implementado e Responsivo) */}
+      {/* MOBILE MENU */}
       {menuOpen && (
         <div className="md:hidden border-t border-white/10 bg-zinc-950/95 backdrop-blur-xl max-h-[calc(100vh-80px)] overflow-y-auto">
           <nav className="flex flex-col p-4 gap-2">
@@ -414,9 +501,18 @@ export function HeaderContact() {
               <House size={18} /> Home
             </Link>
 
+            {isAuthenticated && (
+              <Link 
+                href="/pages/dashboard" 
+                onClick={() => setMenuOpen(false)} 
+                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 font-semibold transition-colors"
+              >
+                <UserCheck size={18} /> Área do Usuário
+              </Link>
+            )}
+
             <div className="border-t border-white/10 my-2" />
 
-            {/* BOTÃO DE DESTAQUE REPRODUZIDO COM PRECISÃO PARA MOBILE */}
             <Link 
               href="/pages/saiba-mais" 
               onClick={() => setMenuOpen(false)} 
@@ -432,76 +528,6 @@ export function HeaderContact() {
   );
 }
 
-
-/**
- * HEADER PARA A PÁGINA LOGIN
- */
 export function HeaderLogin() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-black/40 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
-
-        {/* LOGO */}
-        <Link href="/" className="flex items-center gap-3 group">
-          <div className="w-11 h-11 rounded-2xl bg-linear-to-br from-purple-400 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
-            <MapPin className="text-black" size={22} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-black tracking-tight text-white group-hover:text-purple-400 transition-all">
-              Finder
-            </h1>
-            <p className="text-xs text-zinc-400">Conheça nossa plataforma</p>
-          </div>
-        </Link>
-
-        {/* DESKTOP NAVIGATION */}
-        <nav className="hidden md:flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-3 px-5 py-4 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors">
-            <House size={18} /> Home
-          </Link>
-          <Link href="/pages/saiba-mais" className="ml-2 bg-linear-to-r from-purple-400 to-pink-500 hover:scale-105 transition-all duration-300 text-black font-semibold px-5 py-2 rounded-2xl shadow-lg">
-            Saiba Mais
-          </Link>
-        </nav>
-
-        {/* MOBILE HAMBURGER BUTTON */}
-        <button
-          onClick={() => setMenuOpen(!menuOpen)}
-          className="md:hidden w-11 h-11 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-white hover:bg-white/20 transition-all"
-        >
-          {menuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
-      </div>
-
-      {/* MOBILE MENU (Implementado e Responsivo) */}
-      {menuOpen && (
-        <div className="md:hidden border-t border-white/10 bg-zinc-950/95 backdrop-blur-xl max-h-[calc(100vh-80px)] overflow-y-auto">
-          <nav className="flex flex-col p-4 gap-2">
-            
-            <Link 
-              href="/" 
-              onClick={() => setMenuOpen(false)} 
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-300 hover:bg-white/5 transition-colors"
-            >
-              <House size={18} /> Home
-            </Link>
-
-            <div className="border-t border-white/10 my-2" />
-
-            {/* BOTÃO DE DESTAQUE REPRODUZIDO COM PRECISÃO PARA MOBILE */}
-            <Link 
-              href="/pages/saiba-mais" 
-              onClick={() => setMenuOpen(false)} 
-              className="flex items-center justify-center gap-2 bg-linear-to-r from-purple-400 to-pink-500 text-black font-bold px-5 py-3 rounded-xl shadow-lg shadow-purple-500/10 active:scale-98 transition-all"
-            >
-              Saiba Mais <ArrowRight size={18} />
-            </Link>
-
-          </nav>
-        </div>
-      )}
-    </header>
-  );
+  return <HeaderContact />;
 }

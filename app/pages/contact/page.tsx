@@ -14,7 +14,7 @@ import {
   Sparkles,
   CheckCircle2,
 } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function Contact() {
@@ -27,11 +27,8 @@ export default function Contact() {
     mensagem: "",
   });
 
-  function handleChange(
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement
-    >
-  ) {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+
     const { name, value } = e.target;
 
     setForm((prev) => ({
@@ -40,17 +37,10 @@ export default function Contact() {
     }));
   }
 
-  async function handleSubmit(
-    e: any
-  ) {
+  async function handleSubmit(e: any) {
     e.preventDefault();
 
-    if (
-      !form.nome ||
-      !form.email ||
-      !form.assunto ||
-      !form.mensagem
-    ) {
+    if (!form.nome || !form.email || !form.assunto || !form.mensagem) {
       toast.error("Preencha todos os campos.");
       return;
     }

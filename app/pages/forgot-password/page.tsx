@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   ArrowLeft,
@@ -8,17 +9,22 @@ import {
   Mail,
   Send,
   CheckCircle2,
+  Loader2,
 } from "lucide-react";
 
 import { HeaderLogin } from "@/app/components/header";
 import Footer from "@/app/components/footer";
+import { RecoverEmail } from "@/app/auth/route";
 
 export default function ForgotPasswordPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [enviado, setEnviado] = useState(false);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  // 🔄 RECUPERAÇÃO DE SENHA
+  async function handleSubmit(event: any) {
     event.preventDefault();
 
     if (!email.trim()) {
@@ -28,277 +34,131 @@ export default function ForgotPasswordPage() {
 
     try {
       setLoading(true);
+      await RecoverEmail(email);
 
-      // Aqui futuramente entrará a chamada da API
-      // para enviar o e-mail de recuperação de senha.
+      toast.success("Enviamos um token de recuperação para seu e-mail 📩");
 
       setEnviado(true);
 
-      toast.success(
-        "Se o e-mail estiver cadastrado, você receberá as instruções."
-      );
+      // Redireciona passando o e-mail via Query String
+      setTimeout(() => {
+        router.push(`/pages/ResetPasswordPage?email=${encodeURIComponent(email)}`);
+      }, 2000);
+    } catch (error) {
+      toast.error("Erro ao solicitar recuperação. Verifique o e-mail.");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-zinc-900 via-black to-zinc-800 text-white flex flex-col">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col relative overflow-hidden selection:bg-emerald-500/30">
+      {/* Glows de fundo suavizados para iluminação ambiente */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/3 right-10 w-75 h-75 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
 
       <HeaderLogin />
 
-      <main className="flex-1 flex items-center justify-center px-6 py-16">
-
-        <div className="w-full max-w-xl bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl shadow-2xl p-8 sm:p-10">
-
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 py-12 sm:py-16 relative z-10">
+        <div className="w-full max-w-lg bg-slate-900/60 backdrop-blur-2xl border border-slate-800 rounded-3xl shadow-2xl p-6 sm:p-8 md:p-10">
           {!enviado ? (
             <>
               {/* HEADER */}
               <div className="text-center mb-8">
-
-                <div className="w-20 h-20 rounded-full mx-auto mb-5 bg-linear-to-r from-emerald-400 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
-
-                  <KeyRound
-                    size={38}
-                    className="text-black"
-                  />
-
+                <div className="w-16 h-16 rounded-2xl mx-auto mb-4 bg-linear-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                  <KeyRound size={32} className="text-slate-950" />
                 </div>
 
-                <h1 className="text-4xl font-bold mb-3">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-100 mb-2">
                   Recuperar senha
                 </h1>
 
-                <p className="text-zinc-300 leading-relaxed">
-                  Informe o e-mail associado à sua conta e
-                  enviaremos as instruções para redefinir sua senha.
+                <p className="text-slate-400 text-sm leading-relaxed max-w-sm mx-auto">
+                  Informe o e-mail associado à sua conta e enviaremos as instruções para redefinir sua senha.
                 </p>
-
               </div>
 
               {/* FORM */}
-              <form
-                onSubmit={handleSubmit}
-                className="space-y-5"
-              >
-
-                <div className="space-y-2">
-
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-1.5">
                   <label
                     htmlFor="email"
-                    className="text-sm font-medium text-zinc-200"
+                    className="text-xs font-semibold text-slate-400 uppercase tracking-wider block"
                   >
                     E-mail
                   </label>
 
                   <div className="relative">
-
                     <Mail
-                      size={20}
-                      className="
-                        absolute
-                        left-4
-                        top-1/2
-                        -translate-y-1/2
-                        text-zinc-500
-                      "
+                      size={18}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"
                     />
 
                     <input
                       id="email"
                       type="email"
                       value={email}
-                      onChange={(e) =>
-                        setEmail(e.target.value)
-                      }
+                      onChange={(e) => setEmail(e.target.value)}
                       placeholder="seu@email.com"
                       autoComplete="email"
-                      className="
-                        w-full
-                        rounded-2xl
-                        bg-zinc-900/70
-                        border
-                        border-zinc-700
-                        px-12
-                        py-4
-                        text-white
-                        placeholder:text-zinc-500
-                        outline-none
-                        transition-all
-                        focus:border-emerald-400
-                        focus:ring-2
-                        focus:ring-emerald-400/20
-                      "
+                      className="w-full h-12 rounded-2xl bg-slate-950/80 border border-slate-800 px-11 text-slate-100 placeholder:text-slate-600 outline-none transition-all focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 text-sm"
                     />
-
                   </div>
-
                 </div>
 
                 {/* BOTÃO */}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="
-                    w-full
-                    bg-linear-to-r
-                    from-emerald-400
-                    to-cyan-500
-                    text-black
-                    font-bold
-                    py-4
-                    rounded-2xl
-                    shadow-lg
-                    shadow-emerald-500/20
-                    transition-all
-                    duration-300
-                    hover:scale-[1.02]
-                    hover:shadow-emerald-500/30
-                    active:scale-[0.98]
-                    disabled:opacity-50
-                    disabled:cursor-not-allowed
-                    disabled:hover:scale-100
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                  "
-                >
-
-                  <Send size={20} />
-
-                  {loading
-                    ? "Enviando..."
-                    : "Enviar instruções"}
-
-                </button>
-
+                <div className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full h-14 rounded-2xl bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all duration-200 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 size={20} className="animate-spin" />
+                        Enviando...
+                      </>
+                    ) : (
+                      <>
+                        <Send size={20} />
+                        Enviar instruções
+                      </>
+                    )}
+                  </button>
+                </div>
               </form>
 
               {/* VOLTAR PARA LOGIN */}
-              <div className="mt-8 pt-6 border-t border-white/10">
-
+              <div className="mt-8 pt-6 border-t border-slate-800/80 text-center">
                 <a
                   href="/pages/login"
-                  className="
-                    flex
-                    items-center
-                    justify-center
-                    gap-2
-                    text-zinc-400
-                    hover:text-white
-                    transition-colors
-                    text-sm
-                    font-medium
-                  "
+                  className="inline-flex items-center justify-center gap-2 text-xs text-slate-400 hover:text-slate-200 font-medium transition-colors"
                 >
-                  <ArrowLeft size={18} />
+                  <ArrowLeft size={16} />
                   Voltar para o login
                 </a>
-
               </div>
             </>
           ) : (
             /* SUCESSO */
-            <div className="text-center py-4">
-
-              <div className="w-20 h-20 rounded-full mx-auto mb-6 bg-emerald-400/10 border border-emerald-400/20 flex items-center justify-center">
-
-                <CheckCircle2
-                  size={42}
-                  className="text-emerald-400"
-                />
-
+            <div className="text-center py-6">
+              <div className="w-16 h-16 rounded-2xl mx-auto mb-6 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                <CheckCircle2 size={36} className="text-emerald-400" />
               </div>
 
-              <h1 className="text-3xl font-bold mb-4">
+              <h1 className="text-2xl font-bold tracking-tight text-slate-100 mb-3">
                 Verifique seu e-mail
               </h1>
 
-              <p className="text-zinc-400 leading-relaxed max-w-md mx-auto">
-                Caso exista uma conta associada ao endereço
-                <span className="text-white font-medium">
-                  {" "}{email}
-                </span>
-                , você receberá as instruções para redefinir
-                sua senha.
+              <p className="text-slate-400 text-sm leading-relaxed max-w-xs mx-auto">
+                Redirecionando para a tela de validação do token...
               </p>
-
-              <div className="mt-8 bg-zinc-900/70 border border-zinc-700 rounded-2xl p-5 text-left">
-
-                <p className="text-sm text-zinc-400">
-                  Não recebeu o e-mail?
-                </p>
-
-                <ul className="mt-3 space-y-2 text-sm text-zinc-300">
-                  <li>
-                    • Verifique sua caixa de spam.
-                  </li>
-
-                  <li>
-                    • Confirme se o endereço foi digitado corretamente.
-                  </li>
-
-                  <li>
-                    • Aguarde alguns minutos e tente novamente.
-                  </li>
-                </ul>
-
-              </div>
-
-              <div className="mt-8 flex flex-col gap-3">
-
-                <button
-                  type="button"
-                  onClick={() => setEnviado(false)}
-                  className="
-                    w-full
-                    rounded-2xl
-                    border
-                    border-zinc-700
-                    bg-zinc-900/70
-                    py-4
-                    font-semibold
-                    text-zinc-200
-                    hover:bg-zinc-800
-                    hover:border-zinc-600
-                    transition-all
-                  "
-                >
-                  Tentar outro e-mail
-                </button>
-
-                <a
-                  href="/pages/login"
-                  className="
-                    w-full
-                    rounded-2xl
-                    bg-linear-to-r
-                    from-emerald-400
-                    to-cyan-500
-                    py-4
-                    text-center
-                    font-bold
-                    text-black
-                    hover:scale-[1.02]
-                    active:scale-[0.98]
-                    transition-all
-                  "
-                >
-                  Voltar para o login
-                </a>
-
-              </div>
-
             </div>
           )}
-
         </div>
-
       </main>
 
       <Footer />
-
     </div>
   );
 }
