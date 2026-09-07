@@ -16,7 +16,7 @@ import {
 
 import { HeaderLogin } from "@/app/components/header";
 import Footer from "@/app/components/footer";
-import { loginUsuario } from "@/app/auth/route";
+import { loginUsuario } from "@/app/auth/auth-service";
 
 
 export default function LoginPage() {

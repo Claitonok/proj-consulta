@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import { AuthRecover, RecoverEmail } from "../../auth/route";
+import { AuthRecover, RecoverEmail } from "../../auth/auth-service";
 import {
   Eye,
   EyeOff,

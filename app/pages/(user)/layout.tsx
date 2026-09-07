@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 import { LogOut, LayoutDashboard, Trash2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { deleteUsuario } from "@/app/auth/route";
+import { deleteUsuario } from "@/app/auth/auth-service";
 
 
 export default function UserLayout({

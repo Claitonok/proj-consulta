@@ -14,7 +14,7 @@ import {
 
 import { HeaderLogin } from "@/app/components/header";
 import Footer from "@/app/components/footer";
-import { RecoverEmail } from "@/app/auth/route";
+import { RecoverEmail } from "@/app/auth/auth-service";
 
 export default function ForgotPasswordPage() {
   const router = useRouter();

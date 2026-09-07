@@ -15,7 +15,7 @@ import {
 
 import { HeaderLogin } from "@/app/components/header";
 import Footer from "@/app/components/footer";
-import { createUsuario } from "@/app/auth/route";
+import { createUsuario } from "@/app/auth/auth-service";
 import { useRouter } from 'next/navigation';
 
 export default function RegisterPage() {
