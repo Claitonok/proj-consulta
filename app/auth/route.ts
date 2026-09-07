@@ -1,24 +1,22 @@
 import { ResponseDaApi, UsuarioAdmin } from "../types/dados";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://api-finder-production-2c5d.up.railway.app/api/users";
 
-//const API_URL = "http://localhost:8080/api/users";  //My Localhost
+// Gera a credencial de forma compatível com Node.js e Navegador
+const user = process.env.NEXT_PUBLIC_SYSTEM_USER || "";
+const pass = process.env.NEXT_PUBLIC_SYSTEM_PASS || "";
+const auth = typeof window !== "undefined" 
+  ? btoa(`${user}:${pass}`) 
+  : Buffer.from(`${user}:${pass}`).toString("base64");
 
-const API_URL = "https://api-finder-production-2c5d.up.railway.app/api/users"; // Railway Deployment
+const headers = {
+  "Authorization": `Basic ${auth}`,
+  "Content-Type": "application/json"
+};
 
-// Recriando a credencial de forma segura
-const auth = Buffer.from(`${process.env.NEXT_PUBLIC_SYSTEM_USER}:${process.env.NEXT_PUBLIC_SYSTEM_PASS}`).toString('base64');
-
-// 1. Função para buscar usuários admin
+// 1. Buscar usuários admin
 export async function getUsuarios(): Promise<ResponseDaApi> {
-
-    const response = await fetch(`${API_URL}/list`, {
-        method: "GET",
-        headers: {
-            // 2. Passa o cabeçalho de autorização básico
-            "Authorization": `Basic ${auth}`,
-            "Content-Type": "application/json"
-        }
-    });
+    const response = await fetch(`${API_URL}/list`, { method: "GET", headers });
 
     if (!response.ok) {
         throw new Error("Erro ao buscar usuários");
@@ -26,15 +24,11 @@ export async function getUsuarios(): Promise<ResponseDaApi> {
     return response.json();
 }
 
-// 2. Função para criar usuário admin
+// 2. Criar usuário admin
 export async function createUsuario(usuarioAdmin: UsuarioAdmin): Promise<UsuarioAdmin> {
     const response = await fetch(`${API_URL}/create`, {
         method: "POST",
-        headers: {
-            // 2. Passa o cabeçalho de autorização básico
-            "Authorization": `Basic ${auth}`,
-            "Content-Type": "application/json"
-        },
+        headers,
         body: JSON.stringify(usuarioAdmin)
     });
 
@@ -44,37 +38,28 @@ export async function createUsuario(usuarioAdmin: UsuarioAdmin): Promise<Usuario
     return response.json();
 }
 
-// 3. Função para deletar usuário admin
-export async function deleteUsuario(id: String): Promise<void> {
+// 3. Deletar usuário admin
+export async function deleteUsuario(id: string): Promise<void> {
     const response = await fetch(`${API_URL}/delete/${id}`, {
         method: "DELETE",
-        headers: {
-            // 2. Passa o cabeçalho de autorização básico
-            "Authorization": `Basic ${auth}`,
-            "Content-Type": "application/json"
-        }
+        headers
     });
 
     if (!response.ok) {
         throw new Error("Erro ao deletar usuário");
     }
 
-    return response.json();
+    // Evita erro se o servidor retornar 204 No Content
+    if (response.status !== 204) {
+        return response.json();
+    }
 }
 
-// 🔥 Função para login do usuário
+// 4. Login de usuário
 export async function loginUsuario(email: string, senha: string) {
-
-    // usuario@padrao.com
-    // 123456
-
-    const response = await fetch(`${API_URL}/authenticate/${email}/${senha}`, {
+    const response = await fetch(`${API_URL}/authenticate/${encodeURIComponent(email)}/${encodeURIComponent(senha)}`, {
         method: "POST",
-        headers: {
-            // 2. Passa o cabeçalho de autorização básico
-            "Authorization": `Basic ${auth}`,
-            "Content-Type": "application/json"
-        }
+        headers
     });
 
     if (!response.ok) {
@@ -84,20 +69,11 @@ export async function loginUsuario(email: string, senha: string) {
     return response.json();
 }
 
-// 🔥 Função para enviar codigo por email de recuperação!!
+// 5. Enviar código de recuperação
 export async function RecoverEmail(email: string) {
-
-    // usuario@padrao.com
-    // 123456
-    
-    // 🔍 Buscar usuário pelo email no banco
     const response = await fetch(`${API_URL}/forgot-password`, {
         method: "POST",
-        headers: {
-            // 2. Passa o cabeçalho de autorização básico
-            "Authorization": `Basic ${auth}`,
-            "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify({ email })
     });
 
@@ -108,18 +84,11 @@ export async function RecoverEmail(email: string) {
     return response.json();
 }
 
-// 🔥 Função para resetar senha usando o token
+// 6. Resetar senha usando token
 export async function AuthRecover(resetToken: string, senha: string) {
-
-    // 🔍 Buscar usuário pelo token no banco
-    // verificar se existe e se não expirou
     const response = await fetch(`${API_URL}/reset-password`, {
         method: "POST",
-        headers: {
-            // 2. Passa o cabeçalho de autorização básico
-            "Authorization": `Basic ${auth}`,
-            "Content-Type": "application/json",
-        },
+        headers,
         body: JSON.stringify({ resetToken, senha })
     });
 
