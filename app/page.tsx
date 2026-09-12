@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { toast } from "sonner";
@@ -15,6 +15,9 @@ import {
   Navigation,
   UserCheck,
   ArrowRight,
+  Crown,
+  Check,
+  Zap,
 } from "lucide-react";
 
 interface CepData {
@@ -25,6 +28,65 @@ interface CepData {
   uf: string;
 }
 
+interface Plano {
+  nome: string;
+  preco: string;
+  destaque?: boolean;
+  popular?: boolean;
+  consultasMinuto: string;
+  consultasMesBase: string;
+  consultasMesTempoReal: string;
+  extras?: string[];
+}
+
+const PLANOS: Plano[] = [
+  {
+    nome: "Grátis",
+    preco: "0",
+    consultasMinuto: "3",
+    consultasMesBase: "130.000",
+    consultasMesTempoReal: "0",
+  },
+  {
+    nome: "Bronze",
+    preco: "149",
+    consultasMinuto: "10",
+    consultasMesBase: "150.000",
+    consultasMesTempoReal: "0",
+  },
+  {
+    nome: "Prata",
+    preco: "249",
+    consultasMinuto: "20",
+    consultasMesBase: "300.000",
+    consultasMesTempoReal: "15.000",
+  },
+  {
+    nome: "Ouro",
+    preco: "349",
+    popular: true,
+    destaque: true,
+    consultasMinuto: "50",
+    consultasMesBase: "600.000",
+    consultasMesTempoReal: "30.000",
+  },
+  {
+    nome: "Esmeralda",
+    preco: "699",
+    consultasMinuto: "100",
+    consultasMesBase: "900.000",
+    consultasMesTempoReal: "50.000",
+  },
+  {
+    nome: "Diamante",
+    preco: "Consulte",
+    consultasMinuto: "Ilimitadas",
+    consultasMesBase: "1.200.000+",
+    consultasMesTempoReal: "60.000+",
+    extras: ["Filas exclusivas", "Suporte Prioritário"],
+  },
+];
+
 export default function Home() {
   const router = useRouter();
 
@@ -33,27 +95,28 @@ export default function Home() {
   const [showModal, setShowModal] = useState(false);
   const [cepData, setCepData] = useState<CepData | null>(null);
 
-  // Estado para armazenar a presença do token
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
 
-  // Verifica o cookie no lado do cliente
+  // Referências para rolagem suave
+  const searchSectionRef = useRef<HTMLDivElement>(null);
+  const plansSectionRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     const token = Cookies.get("token");
-    // const id = Cookies.get("id");
     if (token) {
-      // console.log("Token encontrado:", token);
-      // console.log("ID encontrado:", id);
       setIsAuthenticated(true);
     }
   }, []);
 
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement | null>) => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const formatCep = (value: string) => {
     value = value.replace(/\D/g, "");
-
     if (value.length > 5) {
       value = value.replace(/^(\d{5})(\d)/, "$1-$2");
     }
-
     return value.slice(0, 9);
   };
 
@@ -67,7 +130,6 @@ export default function Home() {
 
     try {
       setLoading(true);
-
       const cleanCep = cep.replace(/\D/g, "");
 
       const response = await fetch(
@@ -100,7 +162,7 @@ export default function Home() {
 
       <Header />
 
-      <main className="flex-1 flex flex-col items-center justify-center px-6 py-16 relative z-10 gap-6">
+      <main className="flex-1 flex flex-col items-center px-6 py-12 relative z-10 gap-16">
         {/* BANNER SE O USUÁRIO ESTIVER LOGADO */}
         {isAuthenticated && (
           <div className="w-full max-w-xl bg-slate-900/80 border border-emerald-500/30 rounded-2xl p-4 flex items-center justify-between backdrop-blur-xl shadow-lg shadow-emerald-500/5 animate-in fade-in slide-in-from-top-4 duration-300">
@@ -119,7 +181,7 @@ export default function Home() {
             </div>
 
             <button
-              onClick={() => router.push("/pages/dashboard")} // Ajuste para a rota da sua área de usuário
+              onClick={() => router.push("/pages/dashboard")}
               className="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 px-4 py-2 rounded-xl font-semibold text-xs transition-all shadow-md shadow-emerald-500/20 cursor-pointer"
             >
               <span>Área do Usuário</span>
@@ -128,7 +190,11 @@ export default function Home() {
           </div>
         )}
 
-        <div className="w-full max-w-xl bg-slate-900/60 backdrop-blur-2xl border border-slate-800 rounded-3xl shadow-2xl p-8 sm:p-10">
+        {/* CARD CONSULTA DE CEP */}
+        <div
+          ref={searchSectionRef}
+          className="w-full max-w-xl bg-slate-900/60 backdrop-blur-2xl border border-slate-800 rounded-3xl shadow-2xl p-8 sm:p-10 scroll-mt-24"
+        >
           <div className="text-center mb-8">
             <div className="w-16 h-16 rounded-2xl mx-auto mb-4 bg-linear-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
               <MapPin size={32} className="text-slate-950" />
@@ -177,11 +243,158 @@ export default function Home() {
             </button>
           </form>
         </div>
+
+        {/* BOTÕES DE NAVEGAÇÃO RÁPIDA (Hero Action Buttons) */}
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => scrollToSection(searchSectionRef)}
+            className="flex items-center gap-2 bg-emerald-400 hover:bg-emerald-300 text-slate-950 font-bold px-8 py-3.5 rounded-full transition-all duration-200 shadow-lg shadow-emerald-500/20 cursor-pointer"
+          >
+            <Zap size={18} />
+            <span>Testar API agora</span>
+          </button>
+
+          <button
+            onClick={() => scrollToSection(plansSectionRef)}
+            className="bg-white hover:bg-slate-200 text-slate-950 font-semibold px-8 py-3.5 rounded-full transition-all duration-200 shadow-md cursor-pointer"
+          >
+            Ver planos
+          </button>
+        </div>
+
+        {/* SEÇÃO DE PLANOS DE AUTOMAÇÃO */}
+        <section
+          ref={plansSectionRef}
+          className="w-full max-w-7xl pt-10 pb-16 scroll-mt-12"
+        >
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold tracking-tight text-slate-100 mb-3">
+              Conheça nossos planos
+            </h2>
+            <p className="text-slate-400 text-sm sm:text-base max-w-md mx-auto">
+              Escolha o plano ideal para seu negócio e comece hoje mesmo
+            </p>
+          </div>
+
+          {/* GRID DE PLANOS */}
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 items-stretch">
+            {PLANOS.map((plano) => (
+              <div
+                key={plano.nome}
+                className={`relative rounded-3xl p-6 flex flex-col justify-between transition-all duration-300 ${
+                  plano.destaque
+                    ? "bg-slate-900 border-2 border-emerald-500 shadow-2xl shadow-emerald-500/10 scale-105 z-20"
+                    : "bg-slate-900/50 border border-slate-800 hover:border-slate-700"
+                }`}
+              >
+                {/* SELO DE DESTAQUE */}
+                {plano.popular && (
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[10px] font-bold tracking-wider uppercase px-3 py-1 rounded-full flex items-center gap-1">
+                    <Crown size={12} />
+                    <span>MAIS ESCOLHIDO</span>
+                  </div>
+                )}
+
+                <div>
+                  {/* TÍTULO & PREÇO */}
+                  <div className="text-center mt-2 mb-6">
+                    <h3 className="text-lg font-medium text-slate-300 mb-3">
+                      {plano.nome}
+                    </h3>
+
+                    <div className="flex items-baseline justify-center gap-1">
+                      {plano.preco !== "Consulte" ? (
+                        <>
+                          <span className="text-xs text-slate-400">R$</span>
+                          <span className="text-4xl font-extrabold text-slate-100">
+                            {plano.preco}
+                          </span>
+                          <span className="text-xs text-slate-500">/mês</span>
+                        </>
+                      ) : (
+                        <span className="text-3xl font-bold text-slate-100">
+                          Consulte
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* BOTAO DE AÇÃO DO CARD */}
+                  <button
+                    onClick={() => router.push("/register")}
+                    className={`w-full py-2.5 px-4 rounded-full text-xs font-bold transition-all mb-8 cursor-pointer ${
+                      plano.destaque
+                        ? "bg-emerald-400 hover:bg-emerald-300 text-slate-950 shadow-md shadow-emerald-500/20"
+                        : "bg-white hover:bg-slate-200 text-slate-950"
+                    }`}
+                  >
+                    {plano.nome === "Grátis"
+                      ? "Teste grátis"
+                      : plano.nome === "Diamante"
+                      ? "Fale conosco!"
+                      : "Assine agora!"}
+                  </button>
+
+                  {plano.destaque && (
+                    <p className="text-[11px] text-emerald-400 text-center font-medium -mt-5 mb-6">
+                      Melhor custo-benefício
+                    </p>
+                  )}
+
+                  {/* ESPECIFICAÇÕES TÉCNICAS */}
+                  <div className="space-y-5 text-left border-t border-slate-800/80 pt-6">
+                    <div>
+                      <p className="text-xl font-bold text-slate-100">
+                        {plano.consultasMinuto}
+                      </p>
+                      <p className="text-[11px] text-slate-400">
+                        Consultas por minuto
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xl font-bold text-slate-100">
+                        {plano.consultasMesBase}
+                      </p>
+                      <p className="text-[11px] text-slate-400">
+                        Consultas por mês da base de dados
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-xl font-bold text-slate-100">
+                        {plano.consultasMesTempoReal}
+                      </p>
+                      <p className="text-[11px] text-slate-400">
+                        Consultas por mês em tempo real
+                      </p>
+                    </div>
+
+                    {/* RECURSOS EXTRAS */}
+                    {plano.extras && (
+                      <div className="space-y-2 border-t border-slate-800/80 pt-4">
+                        {plano.extras.map((extra) => (
+                          <div
+                            key={extra}
+                            className="flex items-center gap-1.5 text-rose-400 text-[11px] font-medium"
+                          >
+                            <Check size={12} />
+                            <span>{extra}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
 
       <Footer />
 
-      {/* Modal Redesenhado */}
+      {/* MODAL DE RESULTADO DO CEP */}
       {showModal && cepData && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-2xl relative">

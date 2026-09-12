@@ -1,28 +1,22 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Cookies from "js-cookie";
-import { LogOut, LayoutDashboard, Trash2, Loader2 } from "lucide-react";
+import { LogOut, LayoutDashboard, Trash2, Loader2, CreditCard, MessageCircle, Home } from "lucide-react";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { deleteUsuario } from "@/app/auth/auth-service";
 
-
-export default function UserLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function UserLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [loadingDelete, setLoadingDelete] = useState(false);
 
   function handleLogout() {
-    // Remove o cookie do token
     Cookies.remove("token");
     Cookies.remove("id");
     document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     document.cookie = "id=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-
     router.push("/pages/login");
   }
 
@@ -32,13 +26,10 @@ export default function UserLayout({
       toast.error("Sessão inválida. Faça login novamente.");
       router.push("/pages/login");
     }
-  }, []);
+  }, [router]);
 
   async function handleExcluirConta() {
-
-    if (!confirm("Tem certeza que deseja excluir sua conta? Esta ação é irreversível.")) {
-      return;
-    }
+    if (!confirm("Tem certeza que deseja excluir sua conta? Esta ação é irreversível.")) return;
 
     const token = Cookies.get("token");
     const id = Cookies.get("id");
@@ -51,29 +42,25 @@ export default function UserLayout({
 
     try {
       setLoadingDelete(true);
-
-      if (!id && !token) {
-        toast.error("Não foi possível identificar o ID do usuário no token.");
-        return;
-      }
-
-      // Executa a requisição de deleção
       await deleteUsuario(id || "");
-
       toast.success("Sua conta foi excluída com sucesso.");
-      
-      // Limpa os dados de sessão e redireciona para a tela de login
       handleLogout();
-    } catch (error) {
+    } catch {
       toast.error("Ocorreu um erro ao tentar excluir a conta. Tente novamente.");
     } finally {
       setLoadingDelete(false);
     }
   }
 
+  const handleWhatsApp = () => {
+    const phone = "5511934216866"; // Insira seu número de WhatsApp com DDD
+    const message = encodeURIComponent("Olá! Preciso de ajuda com meu plano na plataforma Finder.");
+    window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
+  };
+
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col sm:flex-row">
-      {/* Sidebar Restrita */}
+      {/* Sidebar */}
       <aside className="w-full sm:w-64 bg-slate-900/80 border-b sm:border-b-0 sm:border-r border-slate-800 p-6 flex flex-col justify-between">
         <div>
           <div className="flex items-center gap-3 mb-8">
@@ -89,20 +76,52 @@ export default function UserLayout({
           <nav className="space-y-2">
             <button
               onClick={() => router.push("/")}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold cursor-pointer transition-all hover:bg-emerald-500/20"
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 text-xs font-semibold cursor-pointer transition-all"
+            >
+              <Home size={18} />
+              <span>Voltar ao Início</span>
+            </button>
+
+            <button
+              onClick={() => router.push("/pages/dashboard")}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold cursor-pointer transition-all ${
+                pathname === "/pages/dashboard"
+                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  : "text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 border border-transparent"
+              }`}
             >
               <LayoutDashboard size={18} />
-              <span>Home</span>
+              <span>Visão Geral</span>
+            </button>
+
+            <button
+              onClick={() => router.push("/pages/dashboard/planos")}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold cursor-pointer transition-all ${
+                pathname === "/pages/dashboard/planos"
+                  ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                  : "text-slate-400 hover:text-slate-100 hover:bg-slate-800/60 border border-transparent"
+              }`}
+            >
+              <CreditCard size={18} />
+              <span>Meus Planos</span>
             </button>
           </nav>
         </div>
 
         {/* Grupo de Ações Inferiores */}
         <div className="mt-8 pt-4 border-t border-slate-800/80 flex flex-col gap-2.5">
-         <button
+          <button
+            onClick={handleWhatsApp}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-semibold transition-all cursor-pointer"
+          >
+            <MessageCircle size={16} />
+            <span>Falar com a Equipe</span>
+          </button>
+
+          <button
             onClick={handleExcluirConta}
             disabled={loadingDelete}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-800/60 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/30 border border-slate-700/60 text-slate-300 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-800/60 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/30 border border-slate-700/60 text-slate-300 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50"
           >
             {loadingDelete ? (
               <>
@@ -116,6 +135,7 @@ export default function UserLayout({
               </>
             )}
           </button>
+
           <button
             onClick={handleLogout}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-800/60 hover:bg-rose-500/10 hover:text-rose-400 hover:border-rose-500/30 border border-slate-700/60 text-slate-300 text-xs font-semibold transition-all cursor-pointer"
@@ -126,7 +146,6 @@ export default function UserLayout({
         </div>
       </aside>
 
-      {/* Conteúdo das páginas filhas */}
       <main className="flex-1 p-6 sm:p-10">{children}</main>
     </div>
   );
