@@ -53,7 +53,8 @@ export default function ConsultaCnpj() {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [company, setCompany] = useState<CompanyData | null>(null);
-  const [copied, setCopied] = useState(false);
+  const [copiedItem, setCopiedItem] = useState<"cnpj" | "nome" | null>(null);
+  // const [copiedName, setCopiedName] = useState(false);
 
   const formatCnpj = (value: string) => {
     value = value.replace(/\D/g, "");
@@ -171,26 +172,42 @@ export default function ConsultaCnpj() {
 
     try {
       await navigator.clipboard.writeText(company.cnpj);
-      setCopied(true);
+      setCopiedItem("cnpj");
       toast.success("CNPJ copiado para a área de transferência!");
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopiedItem(null), 2000);
     } catch {
       toast.error("Não foi possível copiar o CNPJ");
+    }
+  };
+
+  const copiarNome = async () => {
+    if (!company?.nome) {
+      toast.error("Nome não disponível");
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(company.nome);
+      setCopiedItem("nome");
+      toast.success("Nome copiado para a área de transferência!");
+      setTimeout(() => setCopiedItem(null), 2000);
+    } catch {
+      toast.error("Não foi possível copiar o Nome");
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col relative overflow-hidden selection:bg-emerald-500/30">
       {/* Glows de fundo estilo Neon/Glass */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/3 right-10 w-[300px] h-[300px] bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-125 h-125 bg-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute top-1/3 right-10 w-75 h-75 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none" />
 
       <HeaderConsulta />
 
       <main className="flex-1 flex items-center justify-center px-6 py-16 relative z-10">
         <div className="w-full max-w-xl bg-slate-900/60 backdrop-blur-2xl border border-slate-800 rounded-3xl shadow-2xl p-8 sm:p-10">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-2xl mx-auto mb-4 bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <div className="w-16 h-16 rounded-2xl mx-auto mb-4 bg-linear-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
               <Building2 size={32} className="text-slate-950" />
             </div>
 
@@ -231,7 +248,7 @@ export default function ConsultaCnpj() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-semibold rounded-xl py-3.5 transition-all duration-200 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full bg-linear-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-semibold rounded-xl py-3.5 transition-all duration-200 shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer"
             >
               {loading ? (
                 <span>Consultando...</span>
@@ -272,7 +289,7 @@ export default function ConsultaCnpj() {
               <button
                 onClick={() => {
                   setShowModal(false);
-                  setCopied(false);
+                  setCopiedItem(null);
                 }}
                 className="text-slate-400 hover:text-slate-100 p-2 rounded-full hover:bg-slate-800 transition-colors"
               >
@@ -296,16 +313,40 @@ export default function ConsultaCnpj() {
                 <button
                   type="button"
                   onClick={copiarCnpj}
-                  className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-xs font-semibold ${
-                    copied
+                  className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-xs font-semibold ${copiedItem === "cnpj"
                       ? "bg-emerald-500 text-slate-950"
                       : "bg-slate-800 text-slate-300 hover:bg-emerald-500 hover:text-slate-950"
-                  }`}
+                    }`}
                 >
-                  {copied ? <Check size={16} /> : <Copy size={16} />}
-                  <span>{copied ? "Copiado!" : "Copiar"}</span>
+                  {copiedItem === "cnpj" ? <Check size={16} /> : <Copy size={16} />}
+                  <span>{copiedItem === "cnpj" ? "Copiado!" : "Copiar"}</span>
                 </button>
               </div>
+
+
+              <div className="flex items-center justify-between p-4 rounded-xl bg-slate-950/60 border border-slate-800/80">
+                <div>
+                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+                    Nome
+                  </p>
+                  <p className="text-sm font-medium text-slate-200 mt-0.5">
+                    {company.nome}
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={copiarNome}
+                  className={`p-2.5 rounded-xl transition-all flex items-center gap-2 text-xs font-semibold ${copiedItem === "nome"
+                      ? "bg-emerald-500 text-slate-950"
+                      : "bg-slate-800 text-slate-300 hover:bg-emerald-500 hover:text-slate-950"
+                    }`}
+                >
+                  {copiedItem === "nome" ? <Check size={16} /> : <Copy size={16} />}
+                  <span>{copiedItem === "nome" ? "Copiado!" : "Copiar"}</span>
+                </button>
+              </div>
+
 
               {/* Grid Informações Gerais */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -418,7 +459,7 @@ export default function ConsultaCnpj() {
               <button
                 onClick={() => {
                   setShowModal(false);
-                  setCopied(false);
+                  setCopiedItem(null);
                 }}
                 className="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-200 transition-colors rounded-xl px-6 py-2.5 text-sm font-medium cursor-pointer"
               >
