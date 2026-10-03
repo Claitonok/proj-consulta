@@ -321,7 +321,7 @@ export default function Home() {
 
                   {/* BOTAO DE AÇÃO DO CARD */}
                   <button
-                    onClick={() => router.push("/register")}
+                    onClick={() => router.push("pages/register")}
                     className={`w-full py-2.5 px-4 rounded-full text-xs font-bold transition-all mb-8 cursor-pointer ${
                       plano.destaque
                         ? "bg-emerald-400 hover:bg-emerald-300 text-slate-950 shadow-md shadow-emerald-500/20"
