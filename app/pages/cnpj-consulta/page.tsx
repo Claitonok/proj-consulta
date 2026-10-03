@@ -15,7 +15,9 @@ import {
   Mail,
   FileText,
   Briefcase,
-  AlertCircle
+  AlertCircle,
+  MapPinned,
+  MapPinHouse
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -54,7 +56,6 @@ export default function ConsultaCnpj() {
   const [showModal, setShowModal] = useState(false);
   const [company, setCompany] = useState<CompanyData | null>(null);
   const [copiedItem, setCopiedItem] = useState<"cnpj" | "nome" | null>(null);
-  // const [copiedName, setCopiedName] = useState(false);
 
   const formatCnpj = (value: string) => {
     value = value.replace(/\D/g, "");
@@ -389,24 +390,34 @@ export default function ConsultaCnpj() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   <InfoCard
-                    icon={<MapPin size={16} className="text-emerald-400" />}
+                    icon={<MapPinHouse size={16} className="text-emerald-400" />}
                     title="Logradouro"
-                    value={`${company.logradouro}, ${company.numero}`}
+                    value={company.logradouro || "Não informado"}
                   />
                   <InfoCard
-                    icon={<MapPin size={16} className="text-emerald-400" />}
+                    icon={<MapPinHouse size={16} className="text-emerald-400" />}
+                    title="Número"
+                    value={company.numero || "Não informado"}
+                  />
+                  <InfoCard
+                    icon={<MapPinHouse size={16} className="text-emerald-400" />}
                     title="Complemento"
-                    value={company.complemento}
+                    value={company.complemento || "Não informado"}
                   />
                   <InfoCard
-                    icon={<MapPin size={16} className="text-emerald-400" />}
+                    icon={<MapPinHouse size={16} className="text-emerald-400" />}
                     title="Bairro"
-                    value={company.bairro}
+                    value={company.bairro || "Não informado"}
                   />
                   <InfoCard
-                    icon={<MapPin size={16} className="text-emerald-400" />}
+                    icon={<MapPinHouse size={16} className="text-emerald-400" />}
                     title="Cidade / UF"
-                    value={`${company.municipio} / ${company.uf} (${company.cep})`}
+                    value={`${company.municipio} / ${company.uf}`}
+                  />
+                  <InfoCard
+                    icon={<MapPinned size={16} className="text-emerald-400" />}
+                    title="Cep"
+                    value={company.cep || "Não informado"}
                   />
                 </div>
               </div>
